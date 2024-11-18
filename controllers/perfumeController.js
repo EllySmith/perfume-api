@@ -104,3 +104,30 @@ exports.scrapePerfumes = async (req, res) => {
     res.status(500).json({ message: 'Failed to scrape perfumes', error: error.message });
   }
 };
+
+exports.findByNotes = async (req, res) => {
+  const { notes } = req.body;
+
+  try {
+    const perfumes = await Perfume.find({
+      fragranceNotes: { $in: notes },
+    });
+
+    if (perfumes.length === 0) {
+      return res.status(404).json({ message: 'No match' });
+    }
+
+    res.status(201).json(perfumes.map((perfume) => `${perfume.name} by ${perfume.brand}`));
+  } catch (error) {
+    console.error('Error finding perfumes by notes:', error);
+    res.status(500).json({ message: 'Failed to find perfumes by notes', error: error.message });
+  }
+};
+
+// ideas:
+
+// comparison
+
+// ai scent finder
+
+// ai add description

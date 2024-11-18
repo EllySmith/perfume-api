@@ -38,6 +38,12 @@ Adds a new perfume to the collection retreiving data automatically from a give f
 
 { "url": "fragranntica.com/link" }
 
+### **POST** Endpoint: /api/findByNote 
+
+Serachs and gives back the names of perfumes cotaining certain notes:
+
+{ "notes": ["note", "note2"] }
+
 ### **GET** Endpoint: /api/perfumes
 
 Description: Retrieves a list of all perfumes.
