@@ -1,5 +1,11 @@
 const puppeteer = require('puppeteer');
+const axios = require('axios');
 const Perfume = require('../models/perfumeModel');
+const { pageScraper, profileScraper } = require('./pageScraper');
+
+require('dotenv').config();
+
+const openaiApiKey = process.env.OPENAI_API_KEY;
 
 exports.getPerfumes = async (req, res) => {
   const perfumes = await Perfume.find();
@@ -46,78 +52,32 @@ exports.deletePerfumeByName = async (req, res) => {
 exports.scrapePerfumes = async (req, res) => {
   const { url } = req.body;
 
+  const newPerfume = await pageScraper(url);
+  await newPerfume.save();
+
+  res.status(201).json({
+    message: 'Perfume scraped and added successfully',
+    perfume: newPerfume,
+  });
+};
+
+exports.scrapeProfile = async (req, res) => {
+  const { url } = req.body;
+
   if (!url) {
     return res.status(400).json({ message: 'URL is required' });
   }
 
   try {
-    const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
-
-    await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36');
-    await page.goto(url, { waitUntil: 'networkidle2' });
-    await page.waitForSelector('h1[itemprop="name"]', { timeout: 5000 });
-
-    const name = await page.$eval('h1[itemprop="name"]', (el) => el.innerText.trim());
-    console.log('name', name);
-    if (!name) {
-      throw new Error('Failed to scrape perfume name.');
-    }
-
-    const brand = await page.$eval('p[itemprop="brand"] span[itemprop="name"]', (el) => el.innerText.trim());
-    console.log('brand', brand);
-    const description = await page.$eval('div[itemprop="description"] p', (el) => el.innerText.trim());
-    console.log('desc', description);
-    const cleanName = name
-      .replace(new RegExp(brand, 'gi'), '')
-      .replace(/\bfor (women( and men)?|men)\b/gi, '')
-      .replace(/\s+/g, ' ')
-      .trim();
-    console.log('cleanname', cleanName);
-
-    const notes = [];
-
-    const topNotesRegex = /Top notes are (.*?);/i;
-    const middleNotesRegex = /middle notes? are (.*?);/i;
-    const baseNotesRegex = /base notes\s+are\s+(.*?)(;|\.)/i;
-
-    const topMatch = description.match(topNotesRegex);
-    const middleMatch = description.match(middleNotesRegex);
-    const baseMatch = description.match(baseNotesRegex);
-    console.log('top', topMatch, 'middle', middleMatch, 'base', baseMatch);
-
-    const splitNotes = (noteString) =>
-      noteString.split(/\s+and\s+|,\s*/i)
-        .map((note) => note.trim().toLowerCase())
-        .filter((note) => note.length > 2);
-
-    if (topMatch) {
-      notes.push(...splitNotes(topMatch[1]));
-    }
-    if (middleMatch) {
-      notes.push(...splitNotes(middleMatch[1]));
-    }
-    if (baseMatch) {
-      notes.push(...splitNotes(baseMatch[1]));
-    }
-
-    await browser.close();
-
-    const newPerfume = new Perfume({
-      name: cleanName,
-      brand,
-      fragranceNotes: notes,
-    });
-
-    await newPerfume.save();
+    const links = await profileScraper(url);
 
     res.status(201).json({
-      message: 'Perfume scraped and added successfully',
-      perfume: newPerfume,
+      message: 'Profile scraped successfully',
+      result: links,
     });
   } catch (error) {
-    console.error('Error scraping perfumes:', error);
-    res.status(500).json({ message: 'Failed to scrape perfumes', error: error.message });
+    console.error('Failed to scrape profile:', error);
+    res.status(500).json({ message: 'Failed to scrape profile', error: error.message });
   }
 };
 
@@ -158,6 +118,46 @@ exports.compareNotes = async (req, res) => {
   }
 };
 
+exports.getPerfumeAdvice = async (req, res) => {
+  const { query } = req.body;
+
+  if (!query) {
+    return res.status(400).json({ message: 'Query is required' });
+  }
+
+  try {
+    const prompt = `
+    You are a perfume expert. Based on the user's preferences, provide a perfume recommendation.
+    
+    User query: "${query}"
+    
+    Your advice: 
+    `;
+
+    const response = await axios.post(
+      'https://api.openai.com/v1/chat/completions',
+      {
+        model: 'gpt-3.5-turbo',
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 100,
+        temperature: 0.7,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    const advice = response.data.choices[0].message.content.trim();
+    res.status(200).json({ advice });
+  } catch (error) {
+    console.error('Error fetching advice from GPT:', error.message);
+    res.status(500).json({ message: 'Failed to fetch advice', error: error.message });
+  }
+};
+
 // ideas:
 
 // ai scent finder
@@ -165,3 +165,5 @@ exports.compareNotes = async (req, res) => {
 // ai add description
 
 // scrape fragrantica profile
+
+// find prices on vinted
