@@ -12,15 +12,14 @@ MongoDB as the database for high scalability.
 
 ### 🛠️ Tech Stack
 
-Node.js
-Express.js
-MongoDB (Mongoose ODM)
-Puppeteer (for scraping, if applicable)
-dotenv (for environment variables)
+- Node.js
+- Express.js
+- MongoDB (Mongoose ODM)
+- Puppeteer (for scraping, if applicable)
 
 ## 📡 API Endpoints
 
-### POST Endpoint: /api/perfumes
+### **POST** Endpoint: /api/perfumes
 
 Adds a new perfume to the collection in this format:
 
@@ -33,21 +32,21 @@ Adds a new perfume to the collection in this format:
 createdAt: { default: Date.now },
 }
 
-### POST Endpoint: /api/scrape 
+### **POST** Endpoint: /api/scrape 
 
 Adds a new perfume to the collection retreiving data automatically from a give fragrantica.com link:
 
 { "url": "fragranntica.com/link" }
 
-### GET Endpoint: /api/perfumes
+### **GET** Endpoint: /api/perfumes
 
 Description: Retrieves a list of all perfumes.
 
 
-### GET Endpoint: /api/perfumes/:id
+### **GET** Endpoint: /api/perfumes/:id
 
 Description: Retrieves a perfume by its ID.
 
-### DELETE Endpoint: /api/perfumes/:id
+### **DELETE** Endpoint: /api/perfumes/:id
 
 Description: Deletes a perfume by its ID.
