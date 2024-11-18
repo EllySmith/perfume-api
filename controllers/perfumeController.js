@@ -124,9 +124,25 @@ exports.findByNotes = async (req, res) => {
   }
 };
 
-// ideas:
+exports.compareNotes = async (req, res) => {
+  const { perfume1, perfume2 } = req.body;
+  try {
+    const notes1 = perfume1.fragranceNotes;
+    const notes2 = perfume2.fragranceNotes;
 
-// comparison
+    console.log(notes1);
+    console.log(notes2);
+
+    const sameNotes = (arr1, arr2) => arr1.filter((note) => arr2.includes(note));
+
+    res.status(201).json(sameNotes(notes1, notes2));
+  } catch (error) {
+    console.error('Error comparing perfumes by notes:', error);
+    res.status(500).json({ message: 'Failed to compare perfumes by notes', error: error.message });
+  }
+};
+
+// ideas:
 
 // ai scent finder
 
