@@ -43,10 +43,20 @@ exports.scrapePerfumes = async (req, res) => {
     await page.waitForSelector('h1[itemprop="name"]', { timeout: 5000 });
 
     const name = await page.$eval('h1[itemprop="name"]', (el) => el.innerText.trim());
+    console.log('name', name);
+    if (!name) {
+      throw new Error('Failed to scrape perfume name.');
+    }
 
     const brand = await page.$eval('p[itemprop="brand"] span[itemprop="name"]', (el) => el.innerText.trim());
+    console.log('brand', brand);
     const description = await page.$eval('div[itemprop="description"] p', (el) => el.innerText.trim());
-    const cleanName = name.includes(brand) ? name.split(brand)[0].trim() : name.trim();
+    const cleanName = name
+      .replace(new RegExp(brand, 'gi'), '')
+      .replace(/\bfor (women( and men)?|men)\b/gi, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+    console.log('cleanname', cleanName);
 
     const notes = [];
 
