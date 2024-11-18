@@ -27,6 +27,22 @@ exports.deletePerfume = async (req, res) => {
   res.json({ message: 'Perfume deleted' });
 };
 
+exports.deletePerfumeByName = async (req, res) => {
+  const { name } = req.body;
+  try {
+    const result = await Perfume.deleteMany({ name });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: 'No perfumes found with that name' });
+    }
+
+    res.json({ message: 'Perfume(s) deleted successfully', deletedCount: result.deletedCount });
+  } catch (error) {
+    console.error('Error deleting perfumes:', error);
+    res.status(500).json({ message: 'Failed to delete perfumes', error: error.message });
+  }
+};
+
 exports.scrapePerfumes = async (req, res) => {
   const { url } = req.body;
 

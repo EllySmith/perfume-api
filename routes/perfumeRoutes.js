@@ -10,12 +10,14 @@ const {
   scrapePerfumes,
   findByNotes,
   compareNotes,
+  deletePerfumeByName,
 } = require('../controllers/perfumeController');
 
 router.get('/', getPerfumes);
 router.post('/', createPerfume);
 router.put('/:id', updatePerfume);
 router.delete('/:id', deletePerfume);
+router.delete('/', deletePerfumeByName);
 router.post('/scrape', scrapePerfumes);
 router.post('/findByNotes', findByNotes);
 router.post('/compare', compareNotes);
