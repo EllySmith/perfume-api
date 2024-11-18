@@ -51,6 +51,7 @@ exports.scrapePerfumes = async (req, res) => {
     const brand = await page.$eval('p[itemprop="brand"] span[itemprop="name"]', (el) => el.innerText.trim());
     console.log('brand', brand);
     const description = await page.$eval('div[itemprop="description"] p', (el) => el.innerText.trim());
+    console.log('desc', description);
     const cleanName = name
       .replace(new RegExp(brand, 'gi'), '')
       .replace(/\bfor (women( and men)?|men)\b/gi, '')
@@ -61,17 +62,18 @@ exports.scrapePerfumes = async (req, res) => {
     const notes = [];
 
     const topNotesRegex = /Top notes are (.*?);/i;
-    const middleNotesRegex = /middle note is (.*?);/i;
-    const baseNotesRegex = /base notes are (.*?);/i;
+    const middleNotesRegex = /middle notes? are (.*?);/i;
+    const baseNotesRegex = /base notes\s+are\s+(.*?)(;|\.)/i;
 
     const topMatch = description.match(topNotesRegex);
     const middleMatch = description.match(middleNotesRegex);
     const baseMatch = description.match(baseNotesRegex);
+    console.log('top', topMatch, 'middle', middleMatch, 'base', baseMatch);
 
-    const splitNotes = (noteString) => noteString
-      .split(/,|and/)
-      .map((note) => note.trim().toLowerCase())
-      .filter((note) => note.length > 2);
+    const splitNotes = (noteString) =>
+      noteString.split(/\s+and\s+|,\s*/i)
+        .map((note) => note.trim().toLowerCase())
+        .filter((note) => note.length > 2);
 
     if (topMatch) {
       notes.push(...splitNotes(topMatch[1]));
@@ -82,8 +84,6 @@ exports.scrapePerfumes = async (req, res) => {
     if (baseMatch) {
       notes.push(...splitNotes(baseMatch[1]));
     }
-
-    console.log('Fragrance Notes:', notes);
 
     await browser.close();
 
@@ -147,3 +147,5 @@ exports.compareNotes = async (req, res) => {
 // ai scent finder
 
 // ai add description
+
+// scrape fragrantica profile
