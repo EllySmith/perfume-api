@@ -61,26 +61,6 @@ exports.scrapePerfumes = async (req, res) => {
   });
 };
 
-exports.scrapeProfile = async (req, res) => {
-  const { url } = req.body;
-
-  if (!url) {
-    return res.status(400).json({ message: 'URL is required' });
-  }
-
-  try {
-    const links = await profileScraper(url);
-
-    res.status(201).json({
-      message: 'Profile scraped successfully',
-      result: links,
-    });
-  } catch (error) {
-    console.error('Failed to scrape profile:', error);
-    res.status(500).json({ message: 'Failed to scrape profile', error: error.message });
-  }
-};
-
 exports.findByNotes = async (req, res) => {
   const { notes } = req.body;
 

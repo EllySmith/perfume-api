@@ -61,39 +61,4 @@ const pageScraper = async (url) => {
   return newPerfume;
 };
 
-const profileScraper = async (profileAdress) => {
-  const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-  const page = await browser.newPage();
-  const url = profileAdress;
-
-  try {
-    console.log(`Navigating to ${url}...`);
-
-    await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
-    console.log(`On the page ${url}...`);
-
-    const perfumes = await page.evaluate(() => {
-      const perfumeElements = document.querySelectorAll('.shelf-element a');
-      const perfumeLinks = [];
-
-      perfumeElements.forEach((el) => {
-     const link = el.getAttribute('href');
-        console.log('linnk', link);
-        return link ? `https://www.fragrantica.com${link}` : null;
-      });
-      
-      return perfumeLinks;
-    });
-
-    console.log('Scraped Perfumes:', perfumes);
-
-    return perfumes;
-  } catch (error) {
-    console.error('Error scraping profile:', error);
-    return [];
-  } finally {
-    await browser.close();
-  }
-};
-
-module.exports = { pageScraper, profileScraper };
+module.exports = { pageScraper };
