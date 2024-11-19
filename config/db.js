@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
 
+const dbURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/testDB';
+
 const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb://127.0.0.1:27017/perfumedb', {
+    await mongoose.connect(dbURI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
