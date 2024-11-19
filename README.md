@@ -34,18 +34,23 @@ Adds a new perfume to the collection in this format:
   "price": number,
   "createdAt": { "default": "Date.now" }
 }
+```
 
 ### **POST** Endpoint: /api/scrape 
 
 Adds a new perfume to the collection retreiving data automatically from a give fragrantica.com link:
 
+```json
 { "url": "fragranntica.com/link" }
+```
 
 ### **POST** Endpoint: /api/findByNote 
 
 Serachs and gives back the names of perfumes cotaining certain notes:
 
+```json
 { "notes": ["note", "note2"] }
+```
 
 ### **GET** Endpoint: /api/perfumes
 
