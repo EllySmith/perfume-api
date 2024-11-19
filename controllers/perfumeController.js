@@ -8,8 +8,13 @@ require('dotenv').config();
 const openaiApiKey = process.env.OPENAI_API_KEY;
 
 exports.getPerfumes = async (req, res) => {
-  const perfumes = await Perfume.find();
-  res.json(perfumes);
+  try {
+    const perfumes = await Perfume.find();
+    res.json(perfumes);
+  } catch {
+    console.error('Perfume not found');
+    res.status(404).json({ message: 'Perfume not found', error: error.message });
+  }
 };
 
 exports.createPerfume = async (req, res) => {
@@ -143,7 +148,5 @@ exports.getPerfumeAdvice = async (req, res) => {
 // ai scent finder
 
 // ai add description
-
-// scrape fragrantica profile
 
 // find prices on vinted

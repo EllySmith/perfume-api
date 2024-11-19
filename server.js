@@ -12,6 +12,8 @@ app.use('/api/perfumes', perfumeRoutes);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+const startServer = (port) => app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
 });
+
+module.exports = { app, startServer };
