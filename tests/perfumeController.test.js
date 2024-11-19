@@ -1,5 +1,7 @@
 const request = require('supertest');
+const mongoose = require('mongoose');
 const { startServer } = require('../server');
+
 describe('Perfume API', () => {
   let server;
 
@@ -9,6 +11,7 @@ describe('Perfume API', () => {
 
   afterAll((done) => {
     server.close(done);
+    mongoose.disconnect();
   });
 
   it('should fetch all perfumes', async () => {
