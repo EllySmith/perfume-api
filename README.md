@@ -1,4 +1,4 @@
-# ![Perfume Emoji](https://emojis.sh/emoji/perfume-OFT0IHpIREn) Perfume Collection API
+# Perfume Collection API
 
 ### This is a Node.js & Express-based REST API for managing a collection of perfumes using a MongoDB database. The API allows you to perform CRUD (Create, Read, Update, Delete) operations on perfume records, compare scennts, search for notes and parse data from Fragrantica.com.
 
