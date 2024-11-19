@@ -14,10 +14,10 @@
         mongodb:
           image: mongo:latest
           options: |
-            --health-cmd="mongosh --quiet --eval 'db.adminCommand({ ping: 1 })'"
+            --health-cmd="mongo --quiet --eval 'db.adminCommand({ ping: 1 })'"
             --health-interval=10s
             --health-timeout=5s
-            --health-retries=3
+            --health-retries=5
           ports:
             - 27017:27017
       env:
@@ -33,4 +33,6 @@
           run: npm install
         - name: Run Tests
           run: npm test
-  
+        - name: Check MongoDB Logs (Optional Debug)
+          if: failure()
+          run: docker logs ${{ job.services.mongodb.id }}
