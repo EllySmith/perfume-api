@@ -1,40 +1,34 @@
-name: Run Tests
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-
-    services:
-      mongodb:
-        image: mongo:latest
-        options: "--health-cmd='mongo --eval \"db.runCommand({ connectionStatus: 1 })\"'" 
-        ports:
-          - 27017:27017
-
-    env:
-      MONGODB_URI: mongodb://localhost:27017/testDB
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '14'
-
-      - name: Install dependencies
-        run: |
-          npm install
-
-      - name: Run Tests
-        run: |
-          npm test
+---
+  name: Run Tests
+  on:
+    push:
+      branches:
+        - main
+    pull_request:
+      branches:
+        - main
+  jobs:
+    test:
+      runs-on: ubuntu-latest
+      services:
+        mongodb:
+          image: mongo:latest
+          options: >
+            --health-cmd="mongosh --quiet --eval 'db.adminCommand({ ping: 1
+            })'"  --health-interval=10s  --health-timeout=5s  --health-retries=3
+          ports:
+            - 27017:27017
+      env:
+        MONGODB_URI: mongodb://localhost:27017/testDB
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
+        - name: Set up Node.js
+          uses: actions/setup-node@v2
+          with:
+            node-version: "14"
+        - name: Install dependencies
+          run: npm install
+        - name: Run Tests
+          run: npm test
+  
