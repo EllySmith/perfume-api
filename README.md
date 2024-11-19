@@ -1,6 +1,6 @@
-# 🧴 Perfume Collection API
+# ![Perfume Emoji](https://emojis.sh/emoji/perfume-OFT0IHpIREn) Perfume Collection API
 
-## This is a Node.js & Express-based REST API for managing a collection of perfumes using a MongoDB database. The API allows you to perform CRUD (Create, Read, Update, Delete) operations on perfume records.
+### This is a Node.js & Express-based REST API for managing a collection of perfumes using a MongoDB database. The API allows you to perform CRUD (Create, Read, Update, Delete) operations on perfume records, compare scennts, search for notes and parse data from Fragrantica.com.
 
 ### Features
 
@@ -8,7 +8,9 @@ Add new perfumes with detailed notes.
 Retrieve all perfumes or specific ones by ID.
 Update existing perfume records.
 Delete perfumes from the collection.
-MongoDB as the database for high scalability.
+Parse fragrannce data from Fragrantica portal.
+Compare fragrance compositions. 
+Search for notes. 
 
 ### 🛠️ Tech Stack
 
@@ -23,13 +25,14 @@ MongoDB as the database for high scalability.
 
 Adds a new perfume to the collection in this format:
 
+```json
 {
-"name": "Name",
-"brand": "Brand",
-"fragranceNotes": ["note", "note2"],
-"volume": number,
-"price": number,
-createdAt: { default: Date.now },
+  "name": "Name",
+  "brand": "Brand",
+  "fragranceNotes": ["note", "note2"],
+  "volume": number,
+  "price": number,
+  "createdAt": { "default": "Date.now" }
 }
 
 ### **POST** Endpoint: /api/scrape 
