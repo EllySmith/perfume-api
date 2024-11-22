@@ -1,5 +1,6 @@
 
-# Perfume Collection API [![Maintainability](https://api.codeclimate.com/v1/badges/12f28b0b29510dc80a1b/maintainability)](https://codeclimate.com/github/EllySmith/perfume-api/maintainability)
+# Perfume Collection API [![Maintainability](https://api.codeclimate.com/v1/badges/12f28b0b29510dc80a1b/maintainability)](https://codeclimate.com/github/EllySmith/perfume-api/maintainability)![Tests](https://github.com/EllySmith/perfume-api/actions/workflows/ci.yml/badge.svg)
+
 
 ### This is a Node.js & Express-based REST API for managing a collection of perfumes using a MongoDB database. The API allows you to perform CRUD (Create, Read, Update, Delete) operations on perfume records, compare scennts, search for notes and parse data from Fragrantica.com.
 
