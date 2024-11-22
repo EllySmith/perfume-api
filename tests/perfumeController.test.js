@@ -40,7 +40,6 @@ describe('Perfume API', () => {
 
   it('fetch all perfumes', async () => {
     const response = await request(server).get('/api/perfumes');
-    console.log(response);
     expect(response.status).toBe(200);
   });
 
@@ -125,4 +124,23 @@ describe('Perfume API', () => {
       'rose',
     ]);
   });
+
+  test('should scrape a perfume and save it to the database', async () => {
+    const response = await request(server)
+      .post('/api/perfumes/scrape')
+      .send({ url: 'https://www.fragrantica.com/perfume/Zara/Ebony-Wood-58157.html' });
+
+    expect(response.status).toBe(201);
+    expect(response.body.message).toBe('Perfume scraped and added successfully');
+
+    const { perfume } = response.body;
+
+    expect(perfume).toHaveProperty('name', 'Ebony Wood');
+    expect(perfume).toHaveProperty('brand', 'Zara');
+    expect(perfume).toHaveProperty('fragranceNotes');
+    expect(Array.isArray(perfume.fragranceNotes)).toBe(true);
+    expect(perfume).toHaveProperty('_id');
+    expect(perfume).toHaveProperty('createdAt');
+    expect(perfume).toHaveProperty('__v', 0);
+  }, 20000);
 });

@@ -10,21 +10,17 @@ const pageScraper = async (url) => {
   await page.waitForSelector('h1[itemprop="name"]', { timeout: 5000 });
 
   const name = await page.$eval('h1[itemprop="name"]', (el) => el.innerText.trim());
-  console.log('name', name);
   if (!name) {
     throw new Error('Failed to scrape perfume name.');
   }
 
   const brand = await page.$eval('p[itemprop="brand"] span[itemprop="name"]', (el) => el.innerText.trim());
-  console.log('brand', brand);
   const description = await page.$eval('div[itemprop="description"] p', (el) => el.innerText.trim());
-  console.log('desc', description);
   const cleanName = name
     .replace(new RegExp(brand, 'gi'), '')
     .replace(/\bfor (women( and men)?|men)\b/gi, '')
     .replace(/\s+/g, ' ')
     .trim();
-  console.log('cleanname', cleanName);
 
   const notes = [];
   const topNotesRegex = /Top notes are (.*?);/i;
@@ -34,7 +30,6 @@ const pageScraper = async (url) => {
   const topMatch = description.match(topNotesRegex);
   const middleMatch = description.match(middleNotesRegex);
   const baseMatch = description.match(baseNotesRegex);
-  console.log('top', topMatch, 'middle', middleMatch, 'base', baseMatch);
 
   const splitNotes = (noteString) => noteString.split(/\s+and\s+|,\s*/i)
     .map((note) => note.trim().toLowerCase())

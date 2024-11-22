@@ -90,10 +90,6 @@ exports.compareNotes = async (req, res) => {
   try {
     const notes1 = perfume1.fragranceNotes;
     const notes2 = perfume2.fragranceNotes;
-
-    console.log(notes1);
-    console.log(notes2);
-
     const sameNotes = (arr1, arr2) => arr1.filter((note) => arr2.includes(note));
 
     res.status(201).json(sameNotes(notes1, notes2));
