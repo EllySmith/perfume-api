@@ -1,6 +1,46 @@
 const puppeteer = require('puppeteer');
 const Perfume = require('../models/perfumeModel');
 
+const linkSearch = async (perfume) => {
+  const searchAttribute = (input) => {
+    let lowerCaseString = input.toLowerCase();
+    let formattedString = lowerCaseString.replace(/ /g, '%20');
+    return formattedString;
+  }
+  const searchUrl = searchAttribute(perfume);
+  const url = `https://www.fragrantica.com/search/?query=${searchUrl}`;
+  console.log('url', url);
+  const browser = await puppeteer.launch({
+    headless: false,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
+  const page = await browser.newPage();
+  
+  page.setDefaultTimeout(60000);
+
+  await page.goto(`https://www.fragrantica.com/search/?query=${searchUrl}`, {
+    waitUntil: 'domcontentloaded',
+  });
+  const html = await page.evaluate(() => {
+    return document.body.innerHTML;
+  });
+  console.log(html);
+  await page.waitForSelector('div.card-section a');
+
+  try {
+    const firstProductLink = await page.$eval('div.card-section a', (anchor) => {
+      return anchor.href;
+    });
+
+    console.log("First product link:", firstProductLink);
+    return firstProductLink;
+  } catch (error) {
+    console.error('Error scraping the page:', error);
+  }
+
+  await browser.close();
+}
+
 const pageScraper = async (url) => {
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
@@ -56,4 +96,4 @@ const pageScraper = async (url) => {
   return newPerfume;
 };
 
-module.exports = { pageScraper };
+module.exports = { pageScraper, linkSearch };

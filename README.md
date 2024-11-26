@@ -20,7 +20,7 @@ Search for notes.
 - Node.js
 - Express.js
 - MongoDB (Mongoose ODM)
-- Puppeteer (for scraping, if applicable)
+- Puppeteer
 
 ## 📡 API Endpoints
 
@@ -46,6 +46,14 @@ Adds a new perfume to the collection retreiving data automatically from a give f
 ```json
 { "url": "fragranntica.com/link" }
 ```
+### **POST** Endpoint: /api/search 
+
+Adds a new perfume to the collection retreiving data automatically from fragrantica search:
+
+```json
+{ "searchString": "chanel 5 eau toilette" }
+```
+(not perfect yet, opens browser on the background to avoid security check and can make mistakes if the query is not precise)
 
 ### **POST** Endpoint: /api/findByNote 
 

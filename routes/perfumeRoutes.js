@@ -12,6 +12,7 @@ const {
   compareNotes,
   deletePerfumeByName,
   getPerfumeAdvice,
+  scrapeSearch,
 } = require('../controllers/perfumeController');
 
 router.get('/', getPerfumes);
@@ -23,5 +24,6 @@ router.post('/scrape', scrapePerfumes);
 router.post('/findByNotes', findByNotes);
 router.post('/compare', compareNotes);
 router.post('/advice', getPerfumeAdvice);
+router.post('/search', scrapeSearch);
 
 module.exports = router;

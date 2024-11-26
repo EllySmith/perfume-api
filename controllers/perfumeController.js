@@ -1,7 +1,7 @@
 const puppeteer = require('puppeteer');
 const axios = require('axios');
 const Perfume = require('../models/perfumeModel');
-const { pageScraper, profileScraper } = require('./pageScraper');
+const { pageScraper, linkSearch } = require('./pageScraper');
 
 require('dotenv').config();
 
@@ -64,6 +64,24 @@ exports.scrapePerfumes = async (req, res) => {
     message: 'Perfume scraped and added successfully',
     perfume: newPerfume,
   });
+};
+
+exports.scrapeSearch = async (req, res) => {
+  const { searchString } = req.body;
+  try {
+  const link = await linkSearch(searchString);
+  console.log('link passed', link);
+  const newPerfume = await pageScraper(link);
+  await newPerfume.save();
+
+  res.status(201).json({
+    message: 'Perfume scraped and added successfully',
+    perfume: newPerfume,
+  });
+  } catch (error) {
+    console.error('Error finding perfumes by notes:', error);
+    res.status(500).json({ message: 'Failed to scrape', error: error.message });
+  }
 };
 
 exports.findByNotes = async (req, res) => {
